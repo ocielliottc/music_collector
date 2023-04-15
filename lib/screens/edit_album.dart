@@ -104,7 +104,7 @@ class EditAlbumState extends State<EditAlbum> {
           await bloc.create(album);
           message = "Album Saved";
         } else {
-          if (widget.album!.artist != album.artist &&
+          if (widget.album!.artist != album.artist ||
               widget.album!.name != album.name) {
             // Changing the name of the artist or album is the same as creating
             // a new album.  Because the artist and album make up the primary
