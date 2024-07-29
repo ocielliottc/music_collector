@@ -32,7 +32,7 @@ class MusicBrainz {
     XmlElement? element = releaseGroup.getElement(elementName);
     return element == null
         ? null
-        : (element.children.isEmpty ? null : element.children.first.text);
+        : (element.children.isEmpty ? null : element.children.first.value);
   }
 
   List<String> _getArtistInfo(String groupName, String body) {
@@ -48,7 +48,7 @@ class MusicBrainz {
       String? firstName;
       for (var artist in artists) {
         final XmlElement? element = artist.getElement('name');
-        final String? name = element?.children.first.text;
+        final String? name = element?.children.first.value;
         if (name != null && name == groupName) {
           final String? id = artist.getAttribute('id');
           if (id != null) {
