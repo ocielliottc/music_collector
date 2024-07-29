@@ -67,7 +67,9 @@ class EditAlbumState extends State<EditAlbum> {
       } catch (err) {
         // Clear the searching flag before displaying the error dialog.
         setState(() => _searching = false);
-        ErrorDialog.show(context, err.toString());
+        if (mounted) {
+          ErrorDialog.show(context, err.toString());
+        }
       }
     }
   }
@@ -136,7 +138,9 @@ class EditAlbumState extends State<EditAlbum> {
         );
       }
     } catch (err) {
-      ErrorDialog.show(context, err.toString());
+      if (mounted) {
+        ErrorDialog.show(context, err.toString());
+      }
     }
   }
 
@@ -148,7 +152,9 @@ class EditAlbumState extends State<EditAlbum> {
           Navigator.pop(context);
         }
       } catch (err) {
-        ErrorDialog.show(context, err.toString());
+        if (mounted) {
+          ErrorDialog.show(context, err.toString());
+        }
       }
     }
   }
@@ -174,6 +180,7 @@ class EditAlbumState extends State<EditAlbum> {
         ),
         iconSize: Style.iconSize,
         onPressed: _saveAlbum,
+        padding: EdgeInsets.zero,
       ),
     ];
     if (widget.album != null) {
@@ -184,6 +191,7 @@ class EditAlbumState extends State<EditAlbum> {
             color: Theme.of(context).colorScheme.primary,
           ),
           iconSize: Style.iconSize,
+          padding: EdgeInsets.zero,
           onPressed: () {
             showDialog(
               context: context,
@@ -213,9 +221,9 @@ class EditAlbumState extends State<EditAlbum> {
     return children;
   }
 
-  Future<bool> _onWillPop() async {
-    if (_modified) {
-      return await showDialog(
+  void _onWillPop(bool didPop) async {
+    if (!didPop) {
+      final bool shouldPop = _modified ? await showDialog(
             context: context,
             builder: (context) => AlertDialog(
               title: const Text("Are you sure?"),
@@ -241,12 +249,14 @@ class EditAlbumState extends State<EditAlbum> {
           // Down here, the dialog was dismissed by touching outside of it,
           // which we will consider as the user telling us that they want to
           // stay on the current screen.
-          false;
-    }
+          false : true;
 
-    // True indicates that the screen can proceed to the previous navigation
-    // point.  Since nothing was modified, the user wasn't even questioned.
-    return true;
+      // True indicates that the screen can proceed to the previous navigation
+      // point.  The user decided to discard the changes.
+      if (shouldPop && mounted) {
+        Navigator.of(context).pop();
+      }
+    }
   }
 
   @override
@@ -302,9 +312,9 @@ class EditAlbumState extends State<EditAlbum> {
           padding: Style.columnPadding,
           decoration: Style.containerOutline(context),
           child: _searching
-              ? Column(
+              ? const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const <Widget>[
+                  children: <Widget>[
                     CircularProgressIndicator(),
                     Text("Searching...", style: Style.titleText)
                   ],
@@ -427,16 +437,15 @@ class EditAlbumState extends State<EditAlbum> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _onWillPop,
+  Widget build(BuildContext context) => PopScope(
+      canPop: false,
+      onPopInvoked: _onWillPop,
       child: Scaffold(
         appBar: AppBar(
             title: Text(widget.album == null ? "Add Album" : "Edit Album")),
         body: SafeArea(child: _renderContent()),
         bottomNavigationBar: BottomAppBar(
           child: Container(
-            padding: Style.bottomBarPadding,
             decoration: Style.bottomBarDecoration(context),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -446,5 +455,4 @@ class EditAlbumState extends State<EditAlbum> {
         ),
       ),
     );
-  }
 }
