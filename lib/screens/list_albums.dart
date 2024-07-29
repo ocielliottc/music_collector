@@ -44,10 +44,10 @@ class _ListAlbumsState extends State<ListAlbums> {
         },
       );
     } else {
-      return Center(
+      return const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const <Widget>[
+          children: <Widget>[
             CircularProgressIndicator(),
             Text("Loading...", style: Style.titleText)
           ],
@@ -68,6 +68,7 @@ class _ListAlbumsState extends State<ListAlbums> {
       IconButton(
         icon: Icon(Icons.add, color: Theme.of(context).colorScheme.primary),
         iconSize: Style.iconSize,
+        padding: EdgeInsets.zero,
         onPressed: () {
           Navigator.push(
             context,
@@ -93,7 +94,6 @@ class _ListAlbumsState extends State<ListAlbums> {
       body: SafeArea(child: _renderAlbumsWidget()),
       bottomNavigationBar: BottomAppBar(
         child: Container(
-          padding: Style.bottomBarPadding,
           decoration: Style.bottomBarDecoration(context),
           child: Row(children: _bottomIcons()),
         ),
