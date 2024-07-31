@@ -388,7 +388,6 @@ class EditAlbumState extends State<EditAlbum> {
               child: Row(
                 children: [
                   Expanded(
-                    flex: 5,
                     child: Column(
                       children: [
                         const Text("Minutes"),
@@ -407,7 +406,6 @@ class EditAlbumState extends State<EditAlbum> {
                     ),
                   ),
                   Expanded(
-                    flex: 5,
                     child: Column(
                       children: [
                         const Text("Seconds"),
