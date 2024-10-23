@@ -221,7 +221,7 @@ class EditAlbumState extends State<EditAlbum> {
     return children;
   }
 
-  void _onWillPop(bool didPop) async {
+  void _onPopInvoked(bool didPop, dynamic) async {
     if (!didPop) {
       final bool shouldPop = _modified ? await showDialog(
             context: context,
@@ -437,7 +437,7 @@ class EditAlbumState extends State<EditAlbum> {
   @override
   Widget build(BuildContext context) => PopScope(
       canPop: false,
-      onPopInvoked: _onWillPop,
+      onPopInvokedWithResult: _onPopInvoked,
       child: Scaffold(
         appBar: AppBar(
             title: Text(widget.album == null ? "Add Album" : "Edit Album")),
